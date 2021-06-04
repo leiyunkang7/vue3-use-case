@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "CommonJS",
+    "lib": [
+      "DOM",
+      "ES2020"
+    ],
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true,
+    "skipLibCheck": true
+  }
+}
