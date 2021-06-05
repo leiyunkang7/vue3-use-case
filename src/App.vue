@@ -3,16 +3,10 @@
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-})
+//  Vue 3 实验性提案 <script setup> SFCs
+// 查看 https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
 </script>
-
-<style></style>
