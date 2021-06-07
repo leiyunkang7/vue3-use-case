@@ -93,19 +93,19 @@ const tableDataRight = ref<User[]>([])
 const tableLeft = ref()
 
 const {
-  syncLeft,
+  sync,
   handleSelectionChange,
   handleSelect,
   handleSelectAll,
   handleDelete,
   handleDeleteAll
-} = useTableTransfer({ rowKey, tableLeft, tableDataLeft, tableDataRight })
+} = useTableTransfer<User>({ rowKey, tableLeft, tableDataLeft, tableDataRight })
 
 watch(
   currentPage,
   async (page) => {
     tableDataLeft.value = await getData(page)
-    syncLeft(tableDataRight.value, true)
+    sync()
   },
   {
     immediate: true
