@@ -3,7 +3,7 @@
   <div class="container">
     <div class="left">
       <el-table
-        ref="multipleTableLeft"
+        ref="tableLeft"
         :data="tableDataLeft"
         tooltip-effect="dark"
         style="width: 45%"
@@ -48,7 +48,7 @@
           <i class="el-icon-delete" @click="handleDeleteAll()"></i>
         </template>
         <template #default="scope">
-          <i class="el-icon-delete" @click="handleDelete(scope.row)"></i>
+          <i class="el-icon-delete" @click="myHndleDelete(scope.row)"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -56,7 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import useTableTransfer from './useTableTransfer'
 
 function getData(page: number) {
   let index = 0
@@ -81,79 +82,24 @@ interface User {
   address: string
 }
 
-const rowKey: keyof User = 'id'
+const rowKey = 'id'
 
 const currentPage = ref(1)
 
 const tableDataLeft = ref<User[]>([])
 
-const multipleSelection = ref<User[]>([])
-
-const isAddOrRemove = ref(true)
-
 const tableDataRight = ref<User[]>([])
 
-const multipleTableLeft = ref()
+const tableLeft = ref()
 
-watch(multipleSelection, (newVal, oldVal) => {
-  isAddOrRemove.value = newVal.length > oldVal.length
-})
-
-function handleSelectionChange(val: User[]) {
-  multipleSelection.value = val
-}
-
-async function handleSelect(selection: User[], row: User) {
-  await nextTick()
-  if (isAddOrRemove.value) {
-    selectAdd(row)
-  } else {
-    selectRemove(row)
-  }
-}
-
-async function handleSelectAll(selection: User[]) {
-  const isAddOrRemove = selection.length !== 0
-
-  if (isAddOrRemove) {
-    selection.forEach((row) => selectAdd(row))
-  } else {
-    tableDataLeft.value.forEach((item) => selectRemove(item))
-  }
-}
-
-function selectRemove(row: User) {
-  const index = tableDataRight.value.findIndex(({ id }) => id === row.id)
-  index >= 0 && tableDataRight.value.splice(index, 1)
-}
-
-function selectAdd(row: User) {
-  if (tableDataRight.value.length === 0) {
-    tableDataRight.value.push(row)
-  }
-
-  const isExsit = tableDataRight.value.findIndex(({ id }) => row.id === id) >= 0
-
-  if (!isExsit) {
-    tableDataRight.value.push(row)
-  }
-}
-
-function syncLeft(list: User[], addOrRemove: boolean) {
-  list.forEach((item) => {
-    const row = tableDataLeft.value.find(({ id }) => id === item.id)
-    row && multipleTableLeft.value?.toggleRowSelection(row, addOrRemove)
-  })
-}
-function handleDelete(row: User) {
-  selectRemove(row)
-  syncLeft([row], false)
-}
-
-function handleDeleteAll() {
-  syncLeft(tableDataRight.value, false)
-  tableDataRight.value = []
-}
+const {
+  syncLeft,
+  handleSelectionChange,
+  handleSelect,
+  handleSelectAll,
+  handleDelete,
+  handleDeleteAll
+} = useTableTransfer({ rowKey, tableLeft, tableDataLeft, tableDataRight })
 
 watch(
   currentPage,
@@ -165,6 +111,11 @@ watch(
     immediate: true
   }
 )
+
+function myHndleDelete(row: User) {
+  handleDelete(row)
+  // 如果有特殊的业务逻辑再包一层
+}
 </script>
 
 <style lang="less" scoped>
