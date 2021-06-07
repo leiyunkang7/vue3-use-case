@@ -47,9 +47,9 @@ export default function useTableTransfer<T = Record<string, unknown>>({
   }
 
   async function handleSelectAll(selection: T[]) {
-    const isAddOrRemove = selection.length !== 0
+    const isAdd = selection.length !== 0
 
-    if (isAddOrRemove) {
+    if (isAdd) {
       selection.forEach((row) => selectAdd(row))
     } else {
       tableDataLeft.value.forEach((item) => selectRemove(item))

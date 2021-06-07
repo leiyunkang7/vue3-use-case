@@ -104,7 +104,6 @@ watch(
   currentPage,
   async (page) => {
     tableDataLeft.value = await getData(page)
-    // sync()
   },
   {
     immediate: true
