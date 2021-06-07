@@ -93,7 +93,6 @@ const tableDataRight = ref<User[]>([])
 const tableLeft = ref()
 
 const {
-  sync,
   handleSelectionChange,
   handleSelect,
   handleSelectAll,
@@ -105,7 +104,7 @@ watch(
   currentPage,
   async (page) => {
     tableDataLeft.value = await getData(page)
-    sync()
+    // sync()
   },
   {
     immediate: true

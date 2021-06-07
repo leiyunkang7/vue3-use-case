@@ -8,7 +8,6 @@ export interface UseTableTransferParams<T> {
 }
 
 export interface UseTableTransferReturns<T> {
-  sync: () => void
   handleSelectionChange: (val: T[]) => void
   handleSelect: (selection: T[], row: T) => Promise<void>
   handleSelectAll: (val: T[]) => void
@@ -80,6 +79,7 @@ export default function useTableTransfer<T = Record<string, unknown>>({
       row && tableLeft.value?.toggleRowSelection(row, addOrRemove)
     })
   }
+
   function handleDelete(row: T) {
     selectRemove(row)
     syncLeft([row], false)
@@ -90,8 +90,13 @@ export default function useTableTransfer<T = Record<string, unknown>>({
     tableDataRight.value = []
   }
 
+  function sync() {
+    syncLeft(tableDataRight.value, true)
+  }
+
+  watch(tableDataLeft, sync)
+
   return {
-    sync: () => syncLeft(tableDataRight.value, true),
     handleSelectionChange,
     handleSelect,
     handleSelectAll,
